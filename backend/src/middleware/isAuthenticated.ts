@@ -8,15 +8,24 @@ function isAuthenticated(req: Request, res: Response, next: NextFunction){
 
     const [,token] = authToken.split(' ')
 
-    const { sub } = verify(
-        token,
-        //@ts-expect-error variavel de ambiente
-        process.env.JWT_SECRET
-    )
-    
-    if(!sub) return res.status(401).end
+    try{
+        const { sub } = verify(
+            token,
+            //@ts-expect-error variavel de ambiente
+            process.env.JWT_SECRET
+        )
 
-    return next()
+        req.user_id = sub
+
+        return next()
+
+    }catch(err){
+        return res.status(401).end
+    }
+    
+    // if(!sub) return res.status(401).end
+
+    
 }
 
 export { isAuthenticated }
