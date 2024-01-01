@@ -1,13 +1,15 @@
 import { Router } from 'express'
 
+import { isAuthenticated } from './middleware/isAuthenticated'
+// User
 import { ListUserController } from './controllers/user/ListUserController'
 import { CreateUserController } from './controllers/user/CreateUserController'
 import { AuthUserController } from './controllers/user/AuthUserController'
 import { DetailUserController } from './controllers/user/DetailUserController'
-
+// Post
 import { CreatePostController } from './controllers/post/CreatePostController'
-
-import { isAuthenticated } from './middleware/isAuthenticated'
+import { ListPostsController } from './controllers/post/ListPostsController'
+import { DeletePostController } from './controllers/post/DeletePostController'
 
 const router = Router()
 
@@ -22,6 +24,10 @@ router.post('/register', new CreateUserController().handle)
 router.post('/login', new AuthUserController().handle)
 
 //POST
-router.post('/posts', new CreatePostController().handle)
+router.post('/post', isAuthenticated, new CreatePostController().handle)
+
+router.get('/posts', new ListPostsController().handle)
+
+router.delete('/posts/:id', new DeletePostController().handle)
 
 export { router }

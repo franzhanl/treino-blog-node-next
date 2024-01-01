@@ -4,13 +4,20 @@ import { CreatePostService } from '../../services/post/CreatePostService'
 class CreatePostController {
     async handle(req: Request, res: Response){
 
-        const { description, user_id } = req.body
+        const { title, subtitle, description, post_image } = req.body
+        const user_id = req.user_id
 
         const createPostService = new CreatePostService()
 
-        const post = await createPostService.execute({description, user_id})
+        if(user_id){
+            const post = await createPostService.execute({title, subtitle, description, post_image, user_id})
+            return res.json(post)
+        }else{
+            res.status(401).end
+        }
+        
 
-        return res.json(post)
+        
     }
 }
 

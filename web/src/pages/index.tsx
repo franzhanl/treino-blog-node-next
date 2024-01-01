@@ -1,25 +1,35 @@
 import Head from 'next/head'
-import { useContext } from 'react'
-import { authContext } from '@/contexts/authContext'
 import { canSSRAuth } from '@/utils/canSSRAuth'
 import { Header } from '@/components/Header/Header'
+import { Cards } from '@/components/Cards'
 
 export default function Home() {
-
-  const { signOut, user } = useContext(authContext)
 
   return (
     <>
       <Head>
         <title>Home</title>
       </Head>
-      <Header userName={user?.name}></Header>
+
+      <Header />
+
+      <div className='mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 '>
+        <main className="sm:flex sm:items-center sm:justify-between">
+
+          <Cards />
+
+          <aside className='min-h-full bg-gray-400'>
+            Google AdSense
+          </aside>
+          
+        </main>
+      </div>
     </>
   )
 }
 
-export const getServerSideProps = canSSRAuth( async (ctx) => {
-  return{
+export const getServerSideProps = canSSRAuth(async (ctx) => {
+  return {
     props: {}
   }
 })

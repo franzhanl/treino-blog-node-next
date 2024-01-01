@@ -5,115 +5,116 @@ import { toast } from "react-toastify";
 import { api } from "@/services/api";
 
 interface IAuthContextData {
-    user: IUserProps | undefined
-    isAuthenticated: boolean
-    signIn: (credentials: ISigninProps) => Promise<void>
-    signOut: () => void
-    signUp: (credentials: ISignUpProps) => Promise<void>
+  user: IUserProps | undefined
+  isAuthenticated: boolean
+  signIn: (credentials: ISigninProps) => Promise<void>
+  signOut: () => void
+  signUp: (credentials: ISignUpProps) => Promise<void>
 }
 
 interface IUserProps {
-    id: string
-    name: string
-    email: string
+  id: string
+  name: string
+  email: string
 }
 
 interface ISigninProps {
-    email: string
-    password: string
+  email: string
+  password: string
 }
 
 interface ISignUpProps {
-    name: string
-    email: string
-    password: string
+  name: string
+  email: string
+  password: string
 }
 
 interface TAuthProviderProps {
-    children: ReactNode
+  children: ReactNode
 }
 
 export const authContext = createContext({} as IAuthContextData)
 
 export const signOut = () => {
-    try{
-        destroyCookie(undefined, '@nextauth.token')
-        Router.push('/login')
-    }catch(err){
-        console.log('Erro on signOut')
-    }
+  try {
+    destroyCookie(undefined, '@nextauth.token')
+    Router.push('/login')
+  } catch (err) {
+    console.log('Erro on signOut')
+  }
 }
 
 
-export function AuthProvider({children}: TAuthProviderProps){
-    const [user, setUser] = useState<IUserProps>()
+export function AuthProvider({ children }: TAuthProviderProps) {
+  const [user, setUser] = useState<IUserProps>()
 
-    const isAuthenticated = !!user
+  const isAuthenticated = !!user
 
-    useEffect(() => {
-        //tenta pegar algo no token
-        const { '@nextauth.token': token } = parseCookies()
-        
-        if(token){
-            api.get('/me').then(response => {
-                const {id, name, email} = response.data
+  useEffect(() => {
+    //tenta pegar algo no token
+    const { '@nextauth.token': token } = parseCookies()
 
-                setUser({
-                    id,
-                    name,
-                    email
-                })
-            })
-            .catch( () => {
-                signOut()
-            })
-        }
+    if (token) {
+      api.get('/me').then(response => {
+        const { id, name, email } = response.data
 
-    }, [])
-
-    const signIn = async ({email, password}: ISigninProps) => {
-        try{
-        
-            const response = await api.post('/login', {email, password} )
-    
-            const {id, name, token} = response.data
-
-            setCookie(undefined, '@nextauth.token', token, {
-                maxAge: 60 * 60 *24 * 30, //expira em um mes
-                path: '/' // quais camiinhos terão acesso ao cookie
-            })
-    
-            setUser({
-                id,
-                name,
-                email
-            })
-
-            api.defaults.headers['Authorization'] = `Bearear ${token}`
-            
-            toast.success("Login efetuado com sucesso !")
-
-            Router.push('/')
-
-        }catch(err){
-            toast.error("Erro ao acessar !")
-            console.log("Error on signIn:", err)
-        }
-    }
-
-    const signUp = async ({name, email ,password}: ISignUpProps) => {
-        api.post('/register', {name, email, password}).then( () => {
-            toast.success("Cadastrado com sucesso!")
-            Router.push('/login')
+        setUser({
+          id,
+          name,
+          email
         })
-        .catch((err) => {
-            toast.error("Houve um erro ao cadastrar, tente mais tarde")
+      })
+        .catch(() => {
+          signOut()
         })
     }
 
-    return(
-        <authContext.Provider value={{user, isAuthenticated, signIn, signOut, signUp}}>
-            {children}
-        </authContext.Provider>
-    )
+  }, [])
+
+  const signIn = async ({ email, password }: ISigninProps) => {
+    try {
+
+      const response = await api.post('/login', { email, password })
+
+      const { id, name, token } = response.data
+
+      setCookie(undefined, '@nextauth.token', token, {
+        maxAge: 60 * 60 * 24 * 30, //expira em um mes
+        path: '/' // quais camiinhos terão acesso ao cookie
+      })
+
+      setUser({
+        id,
+        name,
+        email
+      })
+
+      api.defaults.headers['Authorization'] = `Bearear ${token}`
+
+      toast.success("Login efetuado com sucesso !")
+
+      Router.push('/')
+
+    } catch (err) {
+      toast.error("Erro ao acessar !")
+      console.log("Error on signIn:", err)
+    }
+  }
+
+  const signUp = async ({ name, email, password }: ISignUpProps) => {
+    
+    api.post('/register', { name, email, password }).then(() => {
+      toast.success("Cadastrado com sucesso!")
+      Router.push('/login')
+    })
+      .catch((err) => {
+        toast.error("Houve um erro ao cadastrar, tente mais tarde")
+      })
+  }
+
+  return (
+    <authContext.Provider value={{ user, isAuthenticated, signIn, signOut, signUp }}>
+      {children}
+    </authContext.Provider>
+  )
 }

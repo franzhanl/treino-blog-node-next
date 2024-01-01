@@ -1,20 +1,17 @@
 import { useContext } from "react"
 import { authContext } from "@/contexts/authContext"
+import Link from "next/link"
 
-interface IUserName{
-    userName: string | undefined
-}
-
-const Header = ({userName}: IUserName) => {
+const Header = () => {
     
-    const { signOut } = useContext(authContext)
+    const {user, signOut } = useContext(authContext)
     
     return(
         <header className="bg-gray-50">
         <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
             <div className="sm:flex sm:items-center sm:justify-between">
               <div className="text-center sm:text-left">
-                  <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Bem vindo de volta, {userName}!</h1>
+                  <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Bem vindo de volta, {user?.name}!</h1>
 
                   <p className="mt-1.5 text-sm text-gray-500"> Vamos escrever um novo post!🎉</p>
               </div>
@@ -29,18 +26,18 @@ const Header = ({userName}: IUserName) => {
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        stroke-width="2" >
+                        strokeWidth="2" >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" 
                         />
                     </svg>
                   </button>
 
-                  <button className="block rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring" type="button">
+                  <Link href={'/post'} className="block rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring" type="button">
                     Criar Post
-                  </button>
+                  </Link>
               </div>
             </div>
         </div>
