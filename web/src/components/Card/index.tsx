@@ -1,16 +1,17 @@
 import { EditDel } from "../Button/EditDel"
 import { authContext } from "@/contexts/authContext"
-import Link from "next/link"
 import { useContext } from "react"
+import Link from "next/link"
 
 interface IPostProps {
   id: string
+  postImage: string
   title: string
-  description: string
+  subtitle: string
   user_id: string
 }
 
-const Card = ({id, title, description, user_id }: IPostProps) => {
+const Card = ({id, postImage, title, subtitle, user_id }: IPostProps) => {
 
   const {user} = useContext(authContext)
 
@@ -18,12 +19,13 @@ const Card = ({id, title, description, user_id }: IPostProps) => {
     <div className="relative flex w-full max-w-[48rem] flex-row rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
       <div className="relative m-0 w-2/5 shrink-0 overflow-hidden rounded-xl rounded-r-none bg-white bg-clip-border text-gray-700">
         <img
-          src="https://source.unsplash.com/random"
-          alt="image"
+          // src="https://source.unsplash.com/random"
+          src={`http://localhost:3333/files/${postImage}`}
+          alt="imagem da notícia"
           className="h-full w-full object-cover"
         />
       </div>
-      <div className="p-6">
+      <div className="w-full p-6">
         {/* <h6 className="mb-4 block font-sans text-base font-semibold uppercase leading-relaxed tracking-normal text-pink-500 antialiased">
           startups
         </h6> */}
@@ -31,11 +33,11 @@ const Card = ({id, title, description, user_id }: IPostProps) => {
           {title}
         </h4>
         <p className="mb-8 block font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
-          {description}
+          {subtitle}
         </p>
-        <a className="inline-block" href="#">
+        <div className="flex justify-between">
           <Link
-            href={{ pathname: "/post/show", query: { id: id } }} className="flex select-none items-center gap-2 rounded-lg py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-pink-500 transition-all hover:bg-pink-500/10 active:bg-pink-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+            href={`/post/show/${id}`} className="flex select-none items-center gap-2 rounded-lg py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-pink-500 transition-all hover:bg-pink-500/10 active:bg-pink-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
             type="button"
           >
             Ver mais
@@ -55,12 +57,18 @@ const Card = ({id, title, description, user_id }: IPostProps) => {
               ></path>
             </svg>
           </Link>
-        </a>
-        {user_id === user?.id ? (
-          <EditDel id={id}></EditDel>
-        ) : ('')}
+
+          <div className="right-5">
+            {user_id === user?.id ? (<EditDel id={id} />) : ('')}
+          </div>
+        </div>
+
+        
+          
+        </div>
+        
       </div>
-    </div>
+    
   )
 }
 

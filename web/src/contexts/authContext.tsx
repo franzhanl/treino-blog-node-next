@@ -29,7 +29,7 @@ interface ISignUpProps {
   password: string
 }
 
-interface TAuthProviderProps {
+interface IAuthProviderProps {
   children: ReactNode
 }
 
@@ -45,7 +45,7 @@ export const signOut = () => {
 }
 
 
-export function AuthProvider({ children }: TAuthProviderProps) {
+export function AuthProvider({ children }: IAuthProviderProps) {
   const [user, setUser] = useState<IUserProps>()
 
   const isAuthenticated = !!user

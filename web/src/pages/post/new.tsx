@@ -1,32 +1,66 @@
-import { api } from "@/services/api"
 import { Header } from "@/components/Header/Header"
 import Head from "next/head"
-import { FormEvent, useState } from "react"
+import { ChangeEvent, FormEvent, useState } from "react"
 import { toast } from "react-toastify"
-import Router from "next/router"
 import { canSSRAuth } from "@/utils/canSSRAuth"
+import Link from "next/link"
+import { api } from "@/services/api"
+import Router from "next/router"
 
-export default function Post() {
 
-    const [description, setDescription] = useState('')
+export default function New() {
+
+    const [previewImage, setPreviewImage] = useState<string>();
+    const [postImage, setPostImage] = useState<File>()
+
     const [title, setTitle] = useState('')
+    const [subtitle, setSubtitle] = useState('')
+    const [description, setDescription] = useState('')
 
-    async function handlePostButton(e: FormEvent){
+    async function handlePostButton(e: FormEvent) {
         e.preventDefault()
 
-        if(description == "") return toast.error("É necessário digitar algo para postar")
-        if(title == "") return toast.error("É necessário digitar titulo")
+        if (postImage == null) return toast.error("Imagem é obrigatório")
+        if (title == "") return toast.error("É necessário digitar titulo")
+        if (subtitle == "") return toast.error("É necessário digitar subtitulo")
+        if (description == "") return toast.error("É necessário digitar algo para postar")
 
-        await api.post('/post', {title, description}).then( () => {
+        const data = new FormData()
+
+        data.append('file', postImage)
+        data.append('title', title)
+        data.append('subtitle', subtitle)
+        data.append('description', description)
+
+        createPost(data)
+
+    }
+
+    const createPost = async (data: Object) => {
+        await api.post('/posts', data).then(() => {
             toast.success("Post criado com sucesso!")
             Router.push('/')
-        })
-        .catch((err) => {
+
+        }).catch((err) => {
             toast.error("Falha ao criar post, tente mais tarde")
             console.log(err)
         })
-
     }
+
+    function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+
+        if (!e.target.files) return
+
+        const image = e.target.files[0];
+
+        if (!image) return
+
+        if (image.type === 'image/jpeg' || image.type === 'image/png') {
+            setPostImage(image)
+            setPreviewImage(URL.createObjectURL(e.target.files[0]))
+        }
+    }
+
 
     return (
         <>
@@ -35,31 +69,66 @@ export default function Post() {
             </Head>
 
             <Header />
-
-            <section className=" mt-20 min-h-full">
-                <div className="editor mx-auto w-10/12 flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg max-w-2xl">
-                    <input onChange={(e) => setTitle(e.target.value)} className="title bg-gray-100 border border-gray-300 p-2 mb-4 outline-none" spellCheck="false" placeholder="Titulo" type="text" />
-                    <textarea onChange={(e) => setDescription(e.target.value)} className="description bg-gray-100 sec p-3 h-60 border border-gray-300 outline-none" spellCheck="false" placeholder="Escreva tudo sobre seu post aqui"></textarea>
-
-                    <div className="icons flex text-gray-500 m-2">
-                        <svg className="mr-2 cursor-pointer hover:text-gray-700 border rounded-full p-1 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                        <svg className="mr-2 cursor-pointer hover:text-gray-700 border rounded-full p-1 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        <svg className="mr-2 cursor-pointer hover:text-gray-700 border rounded-full p-1 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
-                        <div className="count ml-auto text-gray-400 text-xs font-semibold">0/300</div>
+            <div className="flex bg-gray-200 items-center justify-center mt-40 pt-20 pb-20 text-black">
+                <div className="grid bg-white rounded-lg shadow-xl w-11/12 md:w-9/12 lg:w-1/2 ">
+                    <div className="flex justify-center mt-10">
+                        <div className="flex w-full justify-center relative ">
+                            <h1 className="text-gray-600 font-bold md:text-2xl text-xl">Novo Post</h1>
+                            <Link href={'/'} className='absolute w-auto bg-red-500 hover:bg-red-700 rounded-lg shadow-xl font-medium text-white px-4 py-2 right-7'>Voltar para Home</Link>
+                        </div>
                     </div>
 
-                    <div className="buttons flex">
-                        <div className="btn border border-gray-300 p-1 px-4 font-semibold cursor-pointer text-gray-500 ml-auto">Cancelar</div>
-                        <button onClick={(e) => handlePostButton(e)} className="btn border border-indigo-500 p-1 px-4 font-semibold cursor-pointer text-gray-200 ml-2 bg-indigo-500">Postar</button>
+
+
+                    <div className="grid grid-cols-1 mt-5 mx-7">
+                        <label className="uppercase md:text-sm text-xs text-gray-500 text-light font-semibold mb-1">Upload Foto</label>
+                        <div className='flex items-center justify-center w-full'>
+                            <label className='flex flex-col border-4 border-dashed w-full h-auto min-h-32 hover:bg-gray-100 hover:border-gray-300 group'>
+                                <div className='flex flex-col items-center justify-center'>
+
+                                    {previewImage ? (
+                                        <div>
+                                            <img src={previewImage} alt="Preview" className="hover:opacity-80" />
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center mt-7">
+                                            <svg className="w-10 h-10 text-blue-400 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                            <p className='lowercase text-sm text-gray-400 group-hover:text-gray-600 pt-1 tracking-wider'>Selecione uma foto</p>
+                                        </div>
+                                    )}
+                                </div>
+                                <input type='file' onChange={(e) => handleFileChange(e)} className="hidden" />
+                            </label>
+                        </div>
                     </div>
+
+                    <div className="grid grid-cols-1 mt-5 mx-7">
+                        <label className="uppercase md:text-sm text-xs text-gray-500 text-light font-semibold">Titulo</label>
+                        <input onChange={(e) => setTitle(e.target.value)} className="py-2 px-3 rounded-lg border-2 border-gray-300 mt-1 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:border-transparent" type="text" placeholder="Título" />
+                    </div>
+
+                    <div className="grid grid-cols-1 mt-5 mx-7">
+                        <label className="uppercase md:text-sm text-xs text-gray-500 text-light font-semibold">Subtitulo</label>
+                        <textarea onChange={(e) => setSubtitle(e.target.value)} className="py-2 px-3 rounded-lg border-2 border-gray-300 mt-1 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:border-transparent" rows={3} cols={50} placeholder="Subtitulo" />
+                    </div>
+
+                    <div className="grid grid-cols-1 mt-5 mx-7">
+                        <label className="uppercase md:text-sm text-xs text-gray-500 text-light font-semibold">Descrição</label>
+                        <textarea onChange={(e) => setDescription(e.target.value)} className="py-2 px-3 rounded-lg border-2 border-gray-300 mt-1 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:border-transparent" rows={9} cols={50} placeholder="Descrição" />
+                    </div>
+
+                    <div className='flex items-center justify-center  md:gap-8 gap-4 pt-5 pb-5'>
+                        <button onClick={(e) => handlePostButton(e)} className='w-auto bg-blue-500 hover:bg-blue-700 rounded-lg shadow-xl font-medium text-white px-4 py-2'>Criar</button>
+                    </div>
+
                 </div>
-            </section>
+            </div>
         </>
     )
 }
 
-export const getServerSideProps = canSSRAuth( async (ctx) => {
-    return{
+export const getServerSideProps = canSSRAuth(async (ctx) => {
+    return {
         props: {}
     }
 })

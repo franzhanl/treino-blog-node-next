@@ -14,9 +14,9 @@ class CreatePostService {
         const post = await prismaClient.post.create({
             data: {
                 title: title,
-                subtitle: '',
+                subtitle: subtitle,
                 description: description,
-                post_image: '',
+                post_image: post_image,
                 user_id: user_id
             }
         })

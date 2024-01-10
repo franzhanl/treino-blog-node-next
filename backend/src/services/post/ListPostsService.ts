@@ -16,13 +16,13 @@ class ListPostsService{
                     user_id: user_id
                 },
                 orderBy: {
-                    id: is_reverse === 'true' ? 'asc' : 'desc'
+                    created_at: is_reverse === 'true' ? 'asc' : 'desc'
                 }
             })
         }else{
             posts = await prismaClient.post.findMany({
                 orderBy: {
-                    id: is_reverse === 'true' ? 'asc' : 'desc'
+                    created_at: is_reverse === 'true' ? 'asc' : 'desc'
                 }
             })
         }

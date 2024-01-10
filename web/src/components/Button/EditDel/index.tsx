@@ -1,6 +1,7 @@
 import { FormEvent } from "react"
 import { api } from "@/services/api"
 import { toast } from "react-toastify"
+import Link from "next/link"
 
 interface IPostId{
   id: string
@@ -16,15 +17,16 @@ const EditDel = ({id}: IPostId) => {
     })
     .catch((err: ErrorEvent) => {
       toast.error("Falha ao excluir Post")
-      console.log(id)
       console.log(err)
     })
   }
 
+
   return (
     <>
       <div className="inline-flex rounded-lg border border-gray-100 bg-gray-100 p-1">
-        <button
+        <Link
+        href={`post/edit/${id}`}
           className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm text-gray-500 hover:text-gray-700 focus:relative"
         >
           <svg
@@ -43,7 +45,7 @@ const EditDel = ({id}: IPostId) => {
           </svg>
 
           Editar
-        </button>
+        </Link>
 
         <button
           onClick={(e) => handleDelete(e)} className="inline-flex items-center gap-2 rounded-md bg-red-700 px-4 py-2 text-sm text-white hover:text-gray-300 shadow-sm focus:relative"

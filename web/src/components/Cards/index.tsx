@@ -42,7 +42,7 @@ const Cards = () => {
         {posts?.map((post: any, index: any) => {
           return (
             <li className="mt-6" key={index}>
-              <Card id={post.id} title={post.title} description={post.description} user_id={post.user_id}></Card>
+              <Card id={post.id} postImage={post.post_image} title={post.title} subtitle={post.subtitle} user_id={post.user_id}></Card>
             </li>
           )
         })}
