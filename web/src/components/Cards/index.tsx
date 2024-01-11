@@ -14,7 +14,7 @@ const Cards = () => {
   const queryParams = new URLSearchParams()
 
   async function getPosts() {
-    api.get(`/posts?${queryParams.toString()}`).then((response) => {
+    await api.get(`/posts?${queryParams.toString()}`).then((response) => {
       setPosts(response.data)
     })
       .catch((err) => console.log(err))

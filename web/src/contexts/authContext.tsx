@@ -51,23 +51,27 @@ export function AuthProvider({ children }: IAuthProviderProps) {
   const isAuthenticated = !!user
 
   useEffect(() => {
-    //tenta pegar algo no token
-    const { '@nextauth.token': token } = parseCookies()
+    async function getCurrentUserData() {
+      //tenta pegar algo no token
+      const { '@nextauth.token': token } = parseCookies()
 
-    if (token) {
-      api.get('/me').then(response => {
-        const { id, name, email } = response.data
+      if (token) {
+        await api.get('/me').then(response => {
+          const { id, name, email } = response.data
 
-        setUser({
-          id,
-          name,
-          email
+          setUser({
+            id,
+            name,
+            email
+          })
         })
-      })
-        .catch(() => {
-          signOut()
-        })
+          .catch(() => {
+            signOut()
+          })
+      }
     }
+
+    getCurrentUserData()
 
   }, [])
 
@@ -102,7 +106,7 @@ export function AuthProvider({ children }: IAuthProviderProps) {
   }
 
   const signUp = async ({ name, email, password }: ISignUpProps) => {
-    
+
     api.post('/register', { name, email, password }).then(() => {
       toast.success("Cadastrado com sucesso!")
       Router.push('/login')

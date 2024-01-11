@@ -15,7 +15,7 @@ export default function Register() {
   function handleCreateUserButton(e: FormEvent) {
     e.preventDefault()
 
-    if(name || email || password == "") {
+    if(name == "" || email == "" || password == "") {
       return toast.error("Preencha todos os campos")
     }
 

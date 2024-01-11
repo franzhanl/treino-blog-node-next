@@ -1,6 +1,6 @@
 import { EditDel } from "../Button/EditDel"
 import { authContext } from "@/contexts/authContext"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import Link from "next/link"
 
 interface IPostProps {
@@ -13,13 +13,14 @@ interface IPostProps {
 
 const Card = ({id, postImage, title, subtitle, user_id }: IPostProps) => {
 
-  const {user} = useContext(authContext)
+  const {user} = useContext(authContext)    
+
+  console.log(user)
 
   return (
     <div className="relative flex w-full max-w-[48rem] flex-row rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
       <div className="relative m-0 w-2/5 shrink-0 overflow-hidden rounded-xl rounded-r-none bg-white bg-clip-border text-gray-700">
         <img
-          // src="https://source.unsplash.com/random"
           src={`http://localhost:3333/files/${postImage}`}
           alt="imagem da notícia"
           className="h-full w-full object-cover"
@@ -62,8 +63,6 @@ const Card = ({id, postImage, title, subtitle, user_id }: IPostProps) => {
             {user_id === user?.id ? (<EditDel id={id} />) : ('')}
           </div>
         </div>
-
-        
           
         </div>
         
