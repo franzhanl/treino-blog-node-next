@@ -11,7 +11,7 @@ import Router, { useRouter } from "next/router"
 export default function Edit() {
 
     const [previewImage, setPreviewImage] = useState<string>();
-    const [postImage, setPostImage] = useState<File>()
+    const [postImage, setPostImage] = useState<File | null>(null)
 
     const [description, setDescription] = useState('')
     const [title, setTitle] = useState('')
@@ -23,9 +23,12 @@ export default function Edit() {
     async function getPostData() {
         try {
             const responsePost = await api.get(`/posts/${id}`)
+
             setTitle(responsePost.data.title)
             setSubtitle(responsePost.data.subtitle)
             setDescription(responsePost.data.description)
+            
+            setPreviewImage(`http://localhost:3333/files/${responsePost.data.post_image}`)
 
         } catch (err) {
             console.log(err)
@@ -35,14 +38,20 @@ export default function Edit() {
     async function handleEdit(e: FormEvent) {
         e.preventDefault()
 
-        if (postImage == null) return toast.error("Imagem é obrigatório")
+        if (!previewImage){
+            if (postImage == null) return toast.error("Imagem é obrigatório")
+        }
+
         if (title == "") return toast.error("É necessário digitar titulo")
         if (subtitle == "") return toast.error("É necessário digitar subtitulo")
         if (description == "") return toast.error("É necessário digitar algo para postar")
 
         const data = new FormData()
 
-        data.append('file', postImage)
+        if (postImage){
+            data.append('file', postImage)
+        }
+        
         data.append('title', title)
         data.append('subtitle', subtitle)
         data.append('description', description)
@@ -89,7 +98,8 @@ export default function Edit() {
             </Head>
 
             <Header />
-            <div className="flex bg-gray-200 items-center justify-center mt-40 pt-20 pb-20 text-black">
+            
+            <div className="flex bg-gray-100 items-center justify-center mt-20 pt-20 pb-20 text-black">
                 <div className="grid bg-white rounded-lg shadow-xl w-11/12 md:w-9/12 lg:w-1/2 ">
                     <div className="flex justify-center mt-10">
                         <div className="flex w-full justify-center relative ">

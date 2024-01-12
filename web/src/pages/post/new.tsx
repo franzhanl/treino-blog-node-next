@@ -69,7 +69,7 @@ export default function New() {
             </Head>
 
             <Header />
-            <div className="flex bg-gray-200 items-center justify-center mt-40 pt-20 pb-20 text-black">
+            <div className="flex bg-gray-100 items-center justify-center mt-20 pt-20 pb-20 text-black">
                 <div className="grid bg-white rounded-lg shadow-xl w-11/12 md:w-9/12 lg:w-1/2 ">
                     <div className="flex justify-center mt-10">
                         <div className="flex w-full justify-center relative ">

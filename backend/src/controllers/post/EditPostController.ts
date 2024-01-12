@@ -7,15 +7,15 @@ class EditPostController {
 
         const { title, subtitle, description } = req.body
 
+        const editPostService = new EditPostService()
+        
         if (!req.file) {
-            throw new Error('error upload file')
+            const post = await editPostService.execute({ id, title, subtitle, description })
+            return res.json(post)
+
         } else {
             const { originalname, filename: post_image } = req.file
-
-            const editPostService = new EditPostService()
-
             const post = await editPostService.execute({ id, title, subtitle, description, post_image })
-
             return res.json(post)
         }
 

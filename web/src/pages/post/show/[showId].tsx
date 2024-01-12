@@ -55,29 +55,28 @@ export default function Show() {
 
             <Header />
 
-            <div className="mt-6 bg-gray-50">
-                <div className=" px-10 py-6 mx-auto">
+            <div className="flex bg-gray-100 items-center justify-center mt-20 pt-20 pb-20 text-black">
+                <div >
 
                     <div className="max-w-6xl px-10 py-6 mx-auto bg-gray-50">
 
-                        <a href="#_" className="block">
-                            <img className="object-cover w-full shadow-sm h-full" src="https://source.unsplash.com/random" />
+                        <a className="block">
+                            <img className="object-cover w-full shadow-sm h-full" src={`http://localhost:3333/files/${post?.post_image}`} />
                         </a>
 
                         <div className="mt-2">
                             <a href="#"
-                                className="sm:text-3xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-purple-500  hover:underline">{post?.title}</a>
+                                className="sm:text-3xl md:text-3xl lg:text-3xl xl:text-4xl font-bold text-blue-500  hover:underline">{post?.title}</a>
 
                             <div className="flex justify-start items-center mt-2">
                                 <h2 className="text-2xl mt-4 text-gray-500 font-bold text-center">{post?.subtitle}</h2>
                             </div>
 
-                            <div className="font-light text-gray-600">
+                            <div className="font-light text-gray-600 mt-6">
 
-                                <a href="#" className="flex items-center mt-6 mb-6"><img
-                                    src="https://avatars.githubusercontent.com/u/71964085?v=4"
-                                    alt="avatar" className="hidden object-cover w-14 h-14 mx-4 rounded-full sm:block" />
-                                    <h1 className="font-bold text-gray-700 hover:underline">{author?.name}</h1>
+                                <a className="flex-col items-center mt-6 mb-6">
+                                    <h2 className="font-bold text-blue-500 text-xl">Autor</h2>
+                                    <h1 className="font-bold text-gray-700 ">{author?.name}</h1>
                                 </a>
                             </div>
                         </div>

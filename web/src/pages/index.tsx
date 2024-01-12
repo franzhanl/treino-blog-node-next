@@ -13,11 +13,11 @@ export default function Home() {
       <Header />
 
       <div className='mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 '>
-        <main className="sm:flex sm:items-start sm:justify-between mt-40">
+        <main className="sm:flex sm:items-start sm:justify-between mt-20">
 
           <Cards />
 
-          <aside className='min-h-full bg-gray-400'>
+          <aside className='flex justify-center items-center min-w-56 min-h-svh bg-gray-400'>
             Google AdSense
           </aside>
           
